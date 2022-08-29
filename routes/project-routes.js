@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router()
 const path = require("path")
-const {Developer, Client, Project, Payment, Project } = require("../models")
+const {Developer, Client, Project, Payment, Deadline } = require("../models")
 
 router.route("/projects").get().post().put()
 
 //all projects - for dev
     router.get("/", async(req, res) => {
         try{
-            const newUser = await Developer.create({
+            const newUser = await Project.findOne({
+                // where:{
+                //     dev_id: , 
+                // }
     
             })
         }catch(err) {
@@ -38,7 +41,7 @@ router.route("/projects").get().post().put()
     
             })
         }catch(err) {
-            if(err){
+            if(err){ 
                 console.log(err)
                 res.status(500).json("Internal server error")
             }
