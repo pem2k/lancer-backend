@@ -31,6 +31,15 @@ Project.init({
         allowNull: false,
     },
 
+    
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            len: [8, 32]
+        }
+    },
+
     developer_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -42,6 +51,7 @@ Project.init({
 
     client_id: {
         type: DataTypes.INTEGER,
+        allowNull: true,
         references: {
             model: "Client",
             key: "id"
