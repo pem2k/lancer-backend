@@ -2,7 +2,6 @@ require("dotenv").config
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router()
-const path = require("path")
 const bcrypt = require("bcrypt")
 
 
@@ -11,7 +10,7 @@ const {Developer, Client, Deadline, Payment, Project } = require("../models")
 
 router.post("/signup", async(req, res) => {
     try{
-        const newUser = await Developer.create({
+        await Developer.create({
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             email: req.body.email,
@@ -24,7 +23,6 @@ router.post("/signup", async(req, res) => {
                 email: req.body.email
             },
         })
-        
 
         const token = jwt.sign({
             id: foundUser.id, 
@@ -45,7 +43,9 @@ router.post("/signup", async(req, res) => {
 
 router.get("/all", async (req, res) =>{
     const allDev = await Developer.findAll({
-        include:  [Project]
+        include:  [{
+            model: Project,
+            include: [Deadline, Payment, Client, Developer ]}]
 })
     res.status(200).json(allDev)
 })
@@ -83,34 +83,36 @@ router.post("/login", async(req, res) => {
     }
 })
 
-
-
 router.get("/home", async(req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try{
-        
+        const userData = jwt.verify(token,process.env.JWT_SECRET)
         const devData = await Developer.findOne({
             where: {
-                id: token.id
+                id: userData.id
             },
             include: [{
                 model: Project,
-                include:[Client, Deadline, Payment]
+                include: [{
+                    model: Client,
+                    attributes: ["first_name, last_name, email, address, phone"]
+                },
+                {model: Deadline},
+                {model: Payment}
+                ]
             }],
         })
         return res.status(200).json(devData)
     }catch(err) {
         if(err){
             console.log(err)
-            res.status(500).json("Internal server error")
+            res.status(500).json(`Internal server error: ${err}`)
         }
     }
 })
 
-
-
 router.delete("/logout", async (req, res) => {
-
+    res.cookie("jwt", "", {maxAge: 1}).redirect("/")
 })
 
 

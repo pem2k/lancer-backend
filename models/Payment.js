@@ -21,6 +21,11 @@ Payment.init({
         allowNull: true,
     },
 
+    paid: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    }, 
+
     project_id: {
         type: DataTypes.INTEGER,
         references: {

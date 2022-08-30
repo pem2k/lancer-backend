@@ -26,6 +26,11 @@ Deadline.init({
         allowNull: true
     },
 
+    completed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+
     project_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -38,12 +43,6 @@ Deadline.init({
     {
         sequelize,
         freezeTableName: true,
-        hooks: {
-            beforeCreate: userObj => {
-                userObj.password = bcrypt.hashSync(userObj.password, 4);
-                return userObj;
-            }
-        }
     });
 
 module.exports = Deadline

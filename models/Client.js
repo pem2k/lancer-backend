@@ -53,6 +53,7 @@ Client.init({
     phone: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             validator: function(v) {
                 return phoneValidationRegex.test(v); 

@@ -15,6 +15,7 @@ Project.init({
     project_name:{
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true
     },
 
     project_status:{

@@ -1,175 +1,270 @@
 const express = require("express");
-const { TokenExpiredError } = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const router = express.Router()
-const path = require("path")
-const {Developer, Client, Project, Payment, Deadline } = require("../models")
+const { Developer, Client, Project, Payment, Deadline } = require("../models")
 
-router.route("/projects").get().post().put()
 
 //all projects - for dev
-    router.get("/", async(req, res) => {
-        try{
-            const allProjects = await Project.findAll({
-                // where:{
-                //     developer_id: null //dev_id , 
-                // }
-                include: [Developer, Client, Payment, Deadline]
-            })
 
-            return res.status(200).json(allProjects)
-        }catch(err) {
-            if(err){
-                console.log(err)
-                res.status(500).json("Internal server error")
-            }
-        }
-    })
-
-    router.post("/", async(req, res) => {
-        const token = req.headers.authorization.split(" ")[1]
-        try{
-            const newProject = await Project.create({
-                project_name: req.body.project_name,
-                project_status: req.body.project_status,
-                initial_charge: req.body.initial_charge,
-                balance: req.body.balance,
-                password: req.body.password,
-                developer_id: token.id,//token id,
-                client_id: null
-            })
-
-
-
-        }catch(err) {
-            if(err){
-                console.log(err)
-                res.status(500).json("Internal server error")
-            }
-        }
-    })
-    
-    // router.put("/",async(req, res) => {
-    //     try{
-    //         const newUser = await Project.findOneAndUpdate({
-    
-    //         })
-    //     }catch(err) {
-    //         if(err){ 
-    //             console.log(err)
-    //             res.status(500).json("Internal server error")
-    //         }
-    //     }
-    // })
-
-//singular projects by id
-    router.get("/:id", async(req, res) => {
-        try{
-            const foundProject = await Project.findOne({
-                where:{
-                    id: req.params.id
-                }
-            })
-
-            return res.status(200).json(foundProject)
-
-        }catch(err) {
-            if(err){
-                console.log(err)
-                res.status(500).json("Internal server error")
-            }
-        }
-    })
-
-    router.put("/:id", async(req, res) => {
-        try{
-            const foundProject = await Project.findOneAndUpdate({
-                where:{
-                    id: req.params.id
-                }
-            })
-
-            return res.status(200).json(foundProject)
-
-        }catch(err) {
-            if(err){
-                console.log(err)
-                res.status(500).json("Internal server error")
-            }
-        }
-    })
-
-router.get("/deadlines", async(req, res) => {
-    try{
-        const foundDeadlines = await Deadline.findAll({
-
+router.post("/", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const newProject = await Project.create({
+            project_name: req.body.project_name,
+            project_status: req.body.project_status,
+            initial_charge: req.body.initial_charge,
+            balance: req.body.balance,
+            password: req.body.password,
+            developer_id: userData.id,//token id,
+            client_id: null
         })
-    }catch(err) {
-        if(err){
+
+        res.status(200).json(newProject)
+    } catch (err) {
+        if (err) {
             console.log(err)
             res.status(500).json("Internal server error")
         }
     }
 })
-router.post("/deadlines", 
-async(req, res) => {
-    try{
-        const newUser = await Developer.create({
 
+router.put("/joinProject", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const foundProject = await Project.findOne({
+            where: {
+                project_name: req.body.project_name
+            }
         })
-    }catch(err) {
-        if(err){
+        if (!foundProject) {
+            return res.status(401).json({ msg: "invalid login credentials" })
+
+        }
+        if (!bcrypt.compareSync(req.body.password, foundProject.password)) {
+            return res.status(401).json({ msg: "invalid login credentials" })
+        }
+        if (foundProject.client_id != null) {
+            return res.status(403).json({ msg: "This may be the wrong project, as another client has previously been assigned." })
+        }
+
+        await foundProject.update({
+            client_id: userData.id
+        })
+
+        return res.status(200).json(foundProject)
+
+    } catch (err) {
+        if (err) {
             console.log(err)
-            res.status(500).json("Internal server error")
+            res.status(500).json(`Internal server error: ${err}`)
         }
     }
 })
-//router.put("/deadlines")
 
-router.get("/invoices", async(req, res) => {
-    try{
+router.get("/dev", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
         const allProjects = await Project.findAll({
-            where:{
-                developer_id: null //dev_id , 
+            where: {
+                developer_id: userData.id,
             },
-            include: [Deadline, Client]
+            include: [{
+                model: Project,
+                include: [{
+                    model: Developer,
+                    attributes: ["first_name, last_name, email, phone"]
+                },
+                {
+                    model: Client,
+                    attributes: ["first_name, last_name, email, company, address, phone"]
+                },
+                { model: Deadline },
+                { model: Payment }
+                ]
+            }],
         })
-    }catch(err) {
-        if(err){
+
+        return res.status(200).json(allProjects)
+    } catch (err) {
+        if (err) {
             console.log(err)
             res.status(500).json("Internal server error")
         }
     }
 })
 
-router.post("/invoices",
-async(req, res) => {
-    try{
-        const newUser = await Payment.create({
-
-        })
-    }catch(err) {
-        if(err){
-            console.log(err)
-            res.status(500).json("Internal server error")
-        }
-    }
-})
-
-router.put("/invoices", async(req, res) => {
-    try{
+router.get("/client", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
         const allProjects = await Project.findAll({
-            where:{
-                developer_id: null //dev_id , 
+            where: {
+                client_id: userData.id,
             },
-            include: [Payment, Client]
+            include: [{
+                model: Project,
+                include: [{
+                    model: Developer,
+                    attributes: ["first_name, last_name, email, phone"]
+                },
+                {
+                    model: Client,
+                    attributes: ["first_name, last_name, email, company, address, phone"]
+                },
+                { model: Deadline },
+                { model: Payment }
+                ]
+            }],
         })
-    }catch(err) {
-        if(err){
+
+        return res.status(200).json(allProjects)
+
+    } catch (err) {
+        if (err) {
             console.log(err)
             res.status(500).json("Internal server error")
         }
     }
 })
+
+
+//auth that allows clients to join the project
+
+
+router.post("/deadlines", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findOne({
+            where: {
+                project_id: req.body.project_id
+            }
+        })
+
+        if (permCheck.developer_id != userData.id) {
+            return res.status(403).json("You are not the developer assigned to this project")
+        }
+
+        const newDeadline = await Deadline.create({
+            date: req.body.date,
+            deliverable: req.body.deliverable,
+            priority: req.body.priority,
+            project_id: req.body.project_id
+        })
+        res.status(200).json(newDeadline)
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
+router.put("/deadlines", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findOne({
+            where: {
+                project_id: req.body.project_id,
+                developer_id: userData.id,
+                client_id: req.body.client_id
+            }
+        })
+
+        if (permCheck.developer_id != userData.id) {
+            return res.status(403).json("You are not the developer assigned to this project")
+        }
+
+        const deadlineUpdate = await Payment.findOne({
+            where: {
+                project_id: permCheck.id,
+            }
+        })
+
+        deadlineUpdate.update({ complete: true })
+
+        res.status(200).json(deadlineUpdate)
+
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
+router.post("/invoices", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findOne({
+            where: {
+                project_id: req.body.project_id,
+                developer_id: userData.id,
+                client_id: req.body.client_id
+            }
+        })
+
+        if (permCheck.developer_id != userData.id) {
+            return res.status(403).json("You are not the developer assigned to this project")
+        }
+
+        const newInvoice = await Deadline.create({
+            date: req.body.date,
+            deliverable: req.body.deliverable,
+            priority: req.body.priority,
+            project_id: req.body.project_id
+        })
+
+        res.status(200).json(newInvoice)
+
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
+router.put("/invoices", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findOne({
+            where: {
+                project_id: req.body.project_id,
+                developer_id: userData.id,
+                client_id: req.body.client_id
+            }
+        })
+
+        if (permCheck.developer_id != userData.id) {
+            return res.status(403).json("You are not the developer assigned to this project")
+        }
+
+        const invoiceUpdate = await Payment.findOne({
+            where: {
+                project_id: permCheck.id,
+            }
+        })
+
+        invoiceUpdate.update({ paid: true })
+        permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
+
+        res.status(200).json(invoiceUpdate)
+
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
 
 
 module.exports = router
