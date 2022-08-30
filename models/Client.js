@@ -41,6 +41,15 @@ Client.init({
         }
     },
 
+    company: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+
+    address: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     phone: {
         type: DataTypes.STRING,
         allowNull: false,

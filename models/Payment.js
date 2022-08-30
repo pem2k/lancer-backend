@@ -16,6 +16,11 @@ Payment.init({
         allowNull: false
     },
 
+    payment_sum: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+
     project_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -28,12 +33,6 @@ Payment.init({
     {
         sequelize,
         freezeTableName: true,
-        hooks: {
-            beforeCreate: userObj => {
-                userObj.password = bcrypt.hashSync(userObj.password, 4);
-                return userObj;
-            }
-        }
     });
 
 module.exports = Payment

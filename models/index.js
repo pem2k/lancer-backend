@@ -5,10 +5,10 @@ const Payment = require("./Payment")
 const Project = require("./Project")
 
 Developer.hasMany(Project, {
-    foreignKey: "dev_id"
+    foreignKey: "developer_id"
 })
 Project.belongsTo(Developer, {
-    foreignKey:"dev_id"
+    foreignKey:"developer_id"
 })
 
 

@@ -1,4 +1,5 @@
 const express = require("express");
+const { TokenExpiredError } = require("jsonwebtoken");
 const router = express.Router()
 const path = require("path")
 const {Developer, Client, Project, Payment, Deadline } = require("../models")
@@ -8,12 +9,14 @@ router.route("/projects").get().post().put()
 //all projects - for dev
     router.get("/", async(req, res) => {
         try{
-            const newUser = await Project.findOne({
+            const allProjects = await Project.findAll({
                 // where:{
-                //     dev_id: , 
+                //     developer_id: null //dev_id , 
                 // }
-    
+                include: [Developer, Client, Payment, Deadline]
             })
+
+            return res.status(200).json(allProjects)
         }catch(err) {
             if(err){
                 console.log(err)
@@ -23,10 +26,20 @@ router.route("/projects").get().post().put()
     })
 
     router.post("/", async(req, res) => {
+        const token = req.headers.authorization.split(" ")[1]
         try{
-            const newUser = await Developer.create({
-    
+            const newProject = await Project.create({
+                project_name: req.body.project_name,
+                project_status: req.body.project_status,
+                initial_charge: req.body.initial_charge,
+                balance: req.body.balance,
+                password: req.body.password,
+                developer_id: token.id,//token id,
+                client_id: null
             })
+
+
+
         }catch(err) {
             if(err){
                 console.log(err)
@@ -35,25 +48,30 @@ router.route("/projects").get().post().put()
         }
     })
     
-    router.put("/",async(req, res) => {
-        try{
-            const newUser = await Developer.create({
+    // router.put("/",async(req, res) => {
+    //     try{
+    //         const newUser = await Project.findOneAndUpdate({
     
-            })
-        }catch(err) {
-            if(err){ 
-                console.log(err)
-                res.status(500).json("Internal server error")
-            }
-        }
-    })
+    //         })
+    //     }catch(err) {
+    //         if(err){ 
+    //             console.log(err)
+    //             res.status(500).json("Internal server error")
+    //         }
+    //     }
+    // })
 
 //singular projects by id
     router.get("/:id", async(req, res) => {
         try{
-            const newUser = await Developer.create({
-
+            const foundProject = await Project.findOne({
+                where:{
+                    id: req.params.id
+                }
             })
+
+            return res.status(200).json(foundProject)
+
         }catch(err) {
             if(err){
                 console.log(err)
@@ -64,9 +82,14 @@ router.route("/projects").get().post().put()
 
     router.put("/:id", async(req, res) => {
         try{
-            const newUser = await Developer.create({
-
+            const foundProject = await Project.findOneAndUpdate({
+                where:{
+                    id: req.params.id
+                }
             })
+
+            return res.status(200).json(foundProject)
+
         }catch(err) {
             if(err){
                 console.log(err)
@@ -77,7 +100,7 @@ router.route("/projects").get().post().put()
 
 router.get("/deadlines", async(req, res) => {
     try{
-        const newUser = await Developer.create({
+        const foundDeadlines = await Deadline.findAll({
 
         })
     }catch(err) {
@@ -104,8 +127,11 @@ async(req, res) => {
 
 router.get("/invoices", async(req, res) => {
     try{
-        const newUser = await Developer.create({
-
+        const allProjects = await Project.findAll({
+            where:{
+                developer_id: null //dev_id , 
+            },
+            include: [Deadline, Client]
         })
     }catch(err) {
         if(err){
@@ -118,7 +144,7 @@ router.get("/invoices", async(req, res) => {
 router.post("/invoices",
 async(req, res) => {
     try{
-        const newUser = await Developer.create({
+        const newUser = await Payment.create({
 
         })
     }catch(err) {
@@ -131,8 +157,11 @@ async(req, res) => {
 
 router.put("/invoices", async(req, res) => {
     try{
-        const newUser = await Developer.create({
-
+        const allProjects = await Project.findAll({
+            where:{
+                developer_id: null //dev_id , 
+            },
+            include: [Payment, Client]
         })
     }catch(err) {
         if(err){
