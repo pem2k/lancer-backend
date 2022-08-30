@@ -67,16 +67,19 @@ const payments = [
         payment_sum: 100,
         project_id: 1
     },
-    {id: 2,
+    {
+        id: 2,
         payment_date: 2022-01-22,
         payment_sum: 1000,
         project_id: 1
     },
-    {id: 3,
+    {
+        id: 3,
         payment_date: 2022-01-17,
         payment_sum: 100,
         project_id: 2},
-    {id: 4,
+    {
+        id: 4,
         payment_date: 2022-01-22,
         payment_sum: 1000,
         project_id: 2},
@@ -85,28 +88,28 @@ const payments = [
 const deadlines  = [
     {
         id: 1,
-        date:2022-01-17,
+        completion_date:2022-01-17,
         deliverable:"New navbar",
         priority:5,
         project_id: 1
     },
     {
         id: 2,
-        date:2022-01-18,
+        completion_date:2022-01-18,
         deliverable:"New server",
         priority:4,
         project_id: 1
     },
     {
         id: 3,
-        date:2022-01-20,
+        completion_date:2022-01-20,
         deliverable:"New about section",
         priority:3,
         project_id: 2
     },
     {
         id: 4,
-        date:2022-01-25,
+        completion_date:2022-01-25,
         deliverable:"New Page",
         priority:1,
         project_id: 2

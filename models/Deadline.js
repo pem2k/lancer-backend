@@ -11,7 +11,7 @@ Deadline.init({
         primaryKey: true,
     }, 
 
-    date: {
+    completion_date: {
         type: DataTypes.DATEONLY,
         allowNull: false
     },

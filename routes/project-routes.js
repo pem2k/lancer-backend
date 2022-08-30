@@ -132,8 +132,6 @@ router.get("/client", async (req, res) => {
 
 
 //auth that allows clients to join the project
-
-
 router.post("/deadlines", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
@@ -149,7 +147,7 @@ router.post("/deadlines", async (req, res) => {
         }
 
         const newDeadline = await Deadline.create({
-            date: req.body.date,
+            completion_date: req.body.completion_date,
             deliverable: req.body.deliverable,
             priority: req.body.priority,
             project_id: req.body.project_id
@@ -171,7 +169,6 @@ router.put("/deadlines", async (req, res) => {
             where: {
                 project_id: req.body.project_id,
                 developer_id: userData.id,
-                client_id: req.body.client_id
             }
         })
 
@@ -205,7 +202,6 @@ router.post("/invoices", async (req, res) => {
             where: {
                 project_id: req.body.project_id,
                 developer_id: userData.id,
-                client_id: req.body.client_id
             }
         })
 
@@ -213,9 +209,9 @@ router.post("/invoices", async (req, res) => {
             return res.status(403).json("You are not the developer assigned to this project")
         }
 
-        const newInvoice = await Deadline.create({
-            date: req.body.date,
-            deliverable: req.body.deliverable,
+        const newInvoice = await Payment.create({
+            payment_date: req.body.payment_date,
+            payment_sum: req.body.payment_sum,
             priority: req.body.priority,
             project_id: req.body.project_id
         })
@@ -238,7 +234,6 @@ router.put("/invoices", async (req, res) => {
             where: {
                 project_id: req.body.project_id,
                 developer_id: userData.id,
-                client_id: req.body.client_id
             }
         })
 
