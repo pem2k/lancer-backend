@@ -123,41 +123,11 @@ router.put("/settings", async (req, res) => {
             return res.status(403).json("Developer only")
         }
 
-        const devData = await Developer.findOne({
+        const devData = await Developer.update(req.body, {
             where: {
                 id: userData.id
             }
         })
-
-        if (req.body.first_name != null){
-            await devData.update({
-                first_name: req.body.first_name
-            })
-        }
-
-        if(req.body.last_name != null){
-            await devData.update({
-                last_name: req.body.last_name
-            })
-        }
-
-        if(req.body.email != null){
-            await devData.update({
-                email: req.body.email
-            })
-        }
-
-        if(req.body.password != null){
-            await devData.update({
-                password: req.body.password
-            })
-        }
-
-        if(req.body.phone != null){
-            await devData.update({
-                phone: req.body.phone
-            })
-        }
 
         res.status(200).json(devData)
         

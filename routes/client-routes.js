@@ -129,47 +129,11 @@ router.put("/settings", async (req, res) => {
             return res.status(403).json("Client only")
         }
 
-        const clientData = await Developer.findOne({
+        const clientData = await Client.update(req.body, {
             where: {
                 id: userData.id
             }
         })
-
-        if (req.body.first_name != null){
-            await clientData.update({
-                first_name: req.body.first_name
-            })
-        }
-
-        if(req.body.last_name != null){
-            await clientData.update({
-                last_name: req.body.last_name
-            })
-        }
-
-        if(req.body.email != null){
-            await clientData.update({
-                email: req.body.email
-            })
-        }
-
-        if(req.body.password != null){
-            await clientData.update({
-                password: req.body.password
-            })
-        }
-
-        if(req.body.address != null){
-            await clientData.update({
-                phone: req.body.address
-            })
-        }
-
-        if(req.body.phone != null){
-            await clientData.update({
-                phone: req.body.phone
-            })
-        }
 
         res.status(200).json(clientData)
 
