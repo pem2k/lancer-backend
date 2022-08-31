@@ -105,7 +105,24 @@ router.get("/client", async (req, res) => {
             where: {
                 client_id: userData.id,
             },
-            include: [Developer, Client, Deadline, Payment ]
+            include: [{
+                model: Project,
+                attributes: {exclude: ["password"]},
+                include: [{
+                    model: Developer,
+                    attributes: {exclude: ["password"]}
+                }, 
+                {
+                    model: Client,
+                    attributes: {exclude: ["password"]}
+                }, 
+                {
+                    model: Payment
+                }, 
+                {
+                    model: Deadline
+                }]
+            }],
             
         })
 
@@ -129,7 +146,11 @@ router.post("/deadlines", async (req, res) => {
             where: {
                 id: req.body.project_id
             },
-            include: [Client]
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Client,
+                attributes: {exclude: ["password"]}
+            }]
         })
 
         if (permCheck.developer_id != userData.id) {
@@ -163,7 +184,11 @@ router.put("/deadlines", async (req, res) => {
                 id: req.body.project_id,
                 developer_id: userData.id,
             },
-            include: [Client]
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Client,
+                attributes: {exclude: ["password"]}
+            }]
         })
 
         if (permCheck.developer_id != userData.id || userData.type == "client") {
@@ -198,7 +223,11 @@ router.post("/invoices", async (req, res) => {
                 id: req.body.project_id,
                 developer_id: userData.id,
             },
-            include: [Client]
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Client,
+                attributes: {exclude: ["password"]}
+            }]
         })
 
         if (permCheck.developer_id != userData.id) {
@@ -233,7 +262,8 @@ router.put("/invoices", async (req, res) => {
             where: {
                 project_id: req.body.project_id,
                 developer_id: userData.id,
-            }
+            },
+            attributes: {exclude: ["password"]},
         })
 
         if (permCheck.developer_id != userData.id) {

@@ -30,7 +30,8 @@ router.post("/signup", async(req, res) => {
             id: foundUser.id, 
             first_name: foundUser.first_name, 
             last_name: foundUser.last_name, 
-            email: foundUser.email
+            email: foundUser.email,
+            type: foundUser.type
         }, process.env.JWT_SECRET, {expiresIn: "2h"})
 
         return res.status(200).json({token:token})
@@ -56,7 +57,7 @@ router.post("/login", async(req, res) => {
         const foundUser = await Client.findOne({
             where:{
                 email: req.body.email
-            },
+            }
         })
         if (!foundUser) {
             return res.status(401).json({ msg: "invalid login credentials" })
@@ -95,7 +96,17 @@ router.get("/home", async(req, res) => {
             },
             include: [{
                 model: Project,
-                include: [Developer, Payment, Deadline                ]
+                attributes: {exclude: ["password"]},
+                include: [{
+                    model: Developer,
+                    attributes: {exclude: ["password"]}
+                }, 
+                {
+                    model: Payment
+                }, 
+                {
+                    model: Deadline
+                }]
             }],
         })
         return res.status(200).json(devData)
@@ -106,7 +117,6 @@ router.get("/home", async(req, res) => {
         }
     }
 })
-
 
 
 router.delete("/logout", async (req, res) => {
