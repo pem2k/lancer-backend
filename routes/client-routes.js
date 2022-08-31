@@ -90,7 +90,7 @@ router.get("/home", async(req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try{
         const userData = jwt.verify(token,process.env.JWT_SECRET)
-        const devData = await Client.findOne({
+        const clientData = await Client.findOne({
             where: {
                 id: userData.id
             },
@@ -109,9 +109,72 @@ router.get("/home", async(req, res) => {
                 }]
             }],
         })
-        return res.status(200).json(devData)
+        return res.status(200).json(clientData)
     }catch(err) {
         if(err){
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
+router.put("/settings", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+   
+    try {
+        
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+
+        if(userData.type == "developer"){
+            return res.status(403).json("Client only")
+        }
+
+        const clientData = await Developer.findOne({
+            where: {
+                id: userData.id
+            }
+        })
+
+        if (req.body.first_name != null){
+            await clientData.update({
+                first_name: req.body.first_name
+            })
+        }
+
+        if(req.body.last_name != null){
+            await clientData.update({
+                last_name: req.body.last_name
+            })
+        }
+
+        if(req.body.email != null){
+            await clientData.update({
+                email: req.body.email
+            })
+        }
+
+        if(req.body.password != null){
+            await clientData.update({
+                password: req.body.password
+            })
+        }
+
+        if(req.body.address != null){
+            await clientData.update({
+                phone: req.body.address
+            })
+        }
+
+        if(req.body.phone != null){
+            await clientData.update({
+                phone: req.body.phone
+            })
+        }
+
+        res.status(200).json(clientData)
+
+    }catch (err) {
+        if (err) {
             console.log(err)
             res.status(500).json(`Internal server error: ${err}`)
         }
