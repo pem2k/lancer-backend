@@ -92,9 +92,10 @@ router.get("/home", async(req, res) => {
             },
             include: [{
                 model: Project,
+                attributes: {exclude: ["password"]},
                 include: [{
                     model: Client,
-                    attributes: ["first_name, last_name, email, address, phone"]
+                    attributes: {exclude: ["password"]}
                 },
                 {model: Deadline},
                 {model: Payment}

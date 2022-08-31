@@ -28,7 +28,7 @@ const clients = [
         id: 1,
         first_name: "Vincent",
         last_name: "Tate",
-        email: "parkermwebdev@goutlook.com",
+        email: "parkermwebdev@outlook.com",
         password: "password",
         phone: "425-222-2222",
         type: "client"
