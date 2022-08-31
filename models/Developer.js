@@ -40,6 +40,11 @@ Developer.init({
         }
     },
 
+    type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+
     phone: {
         type: DataTypes.STRING,
         allowNull: false,

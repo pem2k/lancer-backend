@@ -16,6 +16,7 @@ router.post("/signup", async(req, res) => {
             email: req.body.email,
             phone: req.body.phone, //optional
             password: req.body.password,
+            type: "client"
         })
 
         const foundUser = await Client.findOne({

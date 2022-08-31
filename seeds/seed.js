@@ -9,14 +9,18 @@ const developers = [
         last_name: "McKillop",
         email: "mckilpar000@hotmail.com",
         password: "password",
-        phone: "425-931-9564"
+        phone: "425-931-9564",
+        type: "developer"
 },
-    { id: 2,
+    { 
+        id: 2,
         first_name: "Chris",
         last_name: "Le",
         email: "chris@chris.com",
         password: "password",
-        phone: "425-111-1111"}
+        phone: "425-111-1111",
+        type: "developer"
+    }
 ]
 
 const clients = [
@@ -24,9 +28,10 @@ const clients = [
         id: 1,
         first_name: "Vincent",
         last_name: "Tate",
-        email: "vincent@vincent.com",
+        email: "parkermwebdev@goutlook.com",
         password: "password",
-        phone: "425-222-2222"
+        phone: "425-222-2222",
+        type: "client"
     },
     {
         id: 2,
@@ -34,7 +39,8 @@ const clients = [
         last_name: "Saucedo",
         email: "leslie@leslie.com",
         password: "password",
-        phone: "425-333-3333"
+        phone: "425-333-3333",
+        type: "client"
     }
 ]
 

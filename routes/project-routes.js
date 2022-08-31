@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router()
 const bcrypt = require("bcrypt")
 const { Developer, Client, Project, Payment, Deadline } = require("../models")
+const { mail } = require("./nodemailer")
 
 
 //all projects - for dev
@@ -104,20 +105,8 @@ router.get("/client", async (req, res) => {
             where: {
                 client_id: userData.id,
             },
-            include: [{
-                model: Project,
-                include: [{
-                    model: Developer,
-                    attributes: ["first_name, last_name, email, phone"]
-                },
-                {
-                    model: Client,
-                    attributes: ["first_name, last_name, email, company, address, phone"]
-                },
-                { model: Deadline },
-                { model: Payment }
-                ]
-            }],
+            include: [Developer, Client, Deadline, Payment ]
+            
         })
 
         return res.status(200).json(allProjects)
@@ -138,8 +127,9 @@ router.post("/deadlines", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                project_id: req.body.project_id
-            }
+                id: req.body.project_id
+            },
+            include: [Client]
         })
 
         if (permCheck.developer_id != userData.id) {
@@ -152,6 +142,9 @@ router.post("/deadlines", async (req, res) => {
             priority: req.body.priority,
             project_id: req.body.project_id
         })
+
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `New Deadline Created for ${permCheck.project_name}: ${newDeadline.completion_date}`,`${newDeadline.deliverable}`)
+        
         res.status(200).json(newDeadline)
     } catch (err) {
         if (err) {
@@ -167,23 +160,25 @@ router.put("/deadlines", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                project_id: req.body.project_id,
+                id: req.body.project_id,
                 developer_id: userData.id,
-            }
+            },
+            include: [Client]
         })
 
-        if (permCheck.developer_id != userData.id) {
+        if (permCheck.developer_id != userData.id || userData.type == "client") {
             return res.status(403).json("You are not the developer assigned to this project")
         }
 
-        const deadlineUpdate = await Payment.findOne({
+        const deadlineUpdate = await Deadline.findOne({
             where: {
+                id: req.body.id,
                 project_id: permCheck.id,
             }
         })
 
-        deadlineUpdate.update({ complete: true })
-
+        await deadlineUpdate.update({ completed: true })
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Deliverable complete for: ${permCheck.project_name}: ${newDeadline.completion_date}`,`${newDeadline.deliverable}`)
         res.status(200).json(deadlineUpdate)
 
     } catch (err) {
@@ -200,9 +195,10 @@ router.post("/invoices", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                project_id: req.body.project_id,
+                id: req.body.project_id,
                 developer_id: userData.id,
-            }
+            },
+            include: [Client]
         })
 
         if (permCheck.developer_id != userData.id) {
@@ -212,9 +208,12 @@ router.post("/invoices", async (req, res) => {
         const newInvoice = await Payment.create({
             payment_date: req.body.payment_date,
             payment_sum: req.body.payment_sum,
-            priority: req.body.priority,
             project_id: req.body.project_id
         })
+
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `New invoice for: ${permCheck.project_name}`,`
+            due: ${newInvoice.payment_date}, 
+            amount: ${newInvoice.payment_sum}`)
 
         res.status(200).json(newInvoice)
 
@@ -247,8 +246,13 @@ router.put("/invoices", async (req, res) => {
             }
         })
 
-        invoiceUpdate.update({ paid: true })
-        permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
+        await invoiceUpdate.update({ paid: true })
+        await permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
+
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Invoice paid for: ${permCheck.project_name}`,`
+        due: ${newInvoice.payment_date}, 
+        amount: ${newInvoice.payment_sum}
+        project balance: ${permCheck.balance}`)
 
         res.status(200).json(invoiceUpdate)
 
