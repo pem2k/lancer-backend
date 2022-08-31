@@ -94,13 +94,7 @@ router.get("/home", async(req, res) => {
             },
             include: [{
                 model: Project,
-                include: [{
-                    model: Developer,
-                    attributes: ["first_name, last_name, email, phone"]
-                },
-                {model: Deadline},
-                {model: Payment}
-                ]
+                include: [Developer, Payment, Deadline                ]
             }],
         })
         return res.status(200).json(devData)

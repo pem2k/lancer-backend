@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router()
+const bcrypt = require("bcrypt")
 const { Developer, Client, Project, Payment, Deadline } = require("../models")
 
 
@@ -29,7 +30,7 @@ router.post("/", async (req, res) => {
     }
 })
 
-router.put("/joinProject", async (req, res) => {
+router.put("/", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
@@ -71,20 +72,19 @@ router.get("/dev", async (req, res) => {
             where: {
                 developer_id: userData.id,
             },
-            include: [{
-                model: Project,
+           
                 include: [{
                     model: Developer,
-                    attributes: ["first_name, last_name, email, phone"]
+                    
                 },
                 {
                     model: Client,
-                    attributes: ["first_name, last_name, email, company, address, phone"]
+                    
                 },
                 { model: Deadline },
                 { model: Payment }
                 ]
-            }],
+            ,
         })
 
         return res.status(200).json(allProjects)

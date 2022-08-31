@@ -43,10 +43,7 @@ router.post("/signup", async(req, res) => {
 
 router.get("/all", async (req, res) =>{
     const allDev = await Developer.findAll({
-        include:  [{
-            model: Project,
-            include: [Deadline, Payment, Client, Developer ]}]
-})
+        include:  [Project]})
     res.status(200).json(allDev)
 })
 
