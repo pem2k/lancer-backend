@@ -260,10 +260,14 @@ router.put("/invoices", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                project_id: req.body.project_id,
+                id: req.body.project_id,
                 developer_id: userData.id,
             },
             attributes: {exclude: ["password"]},
+            include:{
+                model: Client, 
+                attributes: {exclude: ["password"]}
+            }
         })
 
         if (permCheck.developer_id != userData.id) {
@@ -280,8 +284,8 @@ router.put("/invoices", async (req, res) => {
         await permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
 
         await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Invoice paid for: ${permCheck.project_name}`,`
-        due: ${newInvoice.payment_date}, 
-        amount: ${newInvoice.payment_sum}
+        due: ${invoiceUpdate.payment_date}, 
+        amount: ${invoiceUpdate.payment_sum}
         project balance: ${permCheck.balance}`)
 
         res.status(200).json(invoiceUpdate)
