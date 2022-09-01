@@ -203,7 +203,7 @@ router.put("/deadlines", async (req, res) => {
         })
 
         await deadlineUpdate.update({ completed: true })
-        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Deliverable complete for: ${permCheck.project_name}: ${newDeadline.completion_date}`,`${newDeadline.deliverable}`)
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Deliverable complete for: ${permCheck.project_name}: ${deadlineUpdate.completion_date}`,`${deadlineUpdate.deliverable}`)
         res.status(200).json(deadlineUpdate)
 
     } catch (err) {
