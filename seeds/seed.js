@@ -69,24 +69,24 @@ const projects = [
 const payments = [
     {
         id: 1,
-        payment_date: 2022-01-17,
+        payment_date: "2022-01-17",
         payment_sum: 100,
         project_id: 1
     },
     {
         id: 2,
-        payment_date: 2022-01-22,
+        payment_date: "2022-01-22",
         payment_sum: 1000,
         project_id: 1
     },
     {
         id: 3,
-        payment_date: 2022-01-17,
+        payment_date: "2022-01-17",
         payment_sum: 100,
         project_id: 2},
     {
         id: 4,
-        payment_date: 2022-01-22,
+        payment_date: "2022-01-22",
         payment_sum: 1000,
         project_id: 2},
 ]
