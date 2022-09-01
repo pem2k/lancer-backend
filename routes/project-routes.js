@@ -105,9 +105,7 @@ router.get("/client", async (req, res) => {
             where: {
                 client_id: userData.id,
             },
-            include: [{
-                model: Project,
-                attributes: {exclude: ["password"]},
+            attributes: {exclude: ["password"]},
                 include: [{
                     model: Developer,
                     attributes: {exclude: ["password"]}
@@ -122,7 +120,7 @@ router.get("/client", async (req, res) => {
                 {
                     model: Deadline
                 }]
-            }],
+            
             
         })
 
