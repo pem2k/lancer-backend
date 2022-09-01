@@ -43,13 +43,6 @@ router.post("/signup", async (req, res) => {
     }
 })
 
-router.get("/all", async (req, res) => {
-    const allDev = await Developer.findAll({
-        include: [Project]
-    })
-    res.status(200).json(allDev)
-})
-
 router.post("/login", async (req, res) => {
 
     try {
