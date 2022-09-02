@@ -111,7 +111,7 @@ router.get("/verify", async(req, res) => {
    
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
-        res.status(200).json(userData)
+        return res.status(200).json(userData)
 }catch (err) {
     if (err) {
         console.log(err)
@@ -146,9 +146,7 @@ router.put("/settings", async (req, res) => {
     }
 })
 
-router.delete("/logout", async (req, res) => {
-    res.cookie("jwt", "", { maxAge: 1 }).redirect("/")
-})
+
 
 
 
