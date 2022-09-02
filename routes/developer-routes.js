@@ -106,6 +106,18 @@ router.get("/home", async (req, res) => {
         }
     }
 })
+router.get("/verify", async(req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+   
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        res.status(200).json(userData)
+}catch (err) {
+    if (err) {
+        console.log(err)
+        res.status(500).json(`Internal server error`)
+    }
+}})
 
 router.put("/settings", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]

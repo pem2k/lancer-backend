@@ -218,7 +218,7 @@ router.post("/invoices", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                id: req.body.project_id,
+                project_name: req.body.project_name,
                 developer_id: userData.id,
             },
             attributes: {exclude: ["password"]},
