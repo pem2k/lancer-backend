@@ -41,6 +41,42 @@ const clients = [
         password: "password",
         phone: "425-333-3333",
         type: "client"
+    },
+    {
+        id: 3,
+        first_name: "Morris",
+        last_name: "Freeman",
+        email: "morrisfreeman@gmail.com",
+        password: "password",
+        phone: "425-223-3422",
+        type: "client"
+    },
+    {
+        id: 4,
+        first_name: "Beverly",
+        last_name: "Byrd",
+        email: "Beverly@byrd.com",
+        password: "password",
+        phone: "425-333-7733",
+        type: "client"
+    },
+    {
+        id: 5,
+        first_name: "Victor",
+        last_name: "Welch",
+        email: "victor@welch.com",
+        password: "password",
+        phone: "425-782-2222",
+        type: "client"
+    },
+    {
+        id: 6,
+        first_name: "Tony",
+        last_name: "Sutton",
+        email: "Tony@Sutton.com",
+        password: "password",
+        phone: "425-312-3363",
+        type: "client"
     }
 ]
 
@@ -48,22 +84,63 @@ const projects = [
     {
         id: 1,
         project_name: "Test Project",
-        project_status: "find a way to quantify status",
+        project_status: "In the testing phase.",
         initial_charge: 500,
         balance: 500,
         password: "password",
         developer_id: 1,
         client_id: 1
     },
-    { id: 2,
+    { 
+        id: 2,
         project_name: "Test Project 2",
-        project_status: "find a way to quantify status",
+        project_status: "Work begins in two days.",
         initial_charge: 1000,
         balance: 1000,
         password: "password",
         developer_id: 2,
         client_id: 2
-    }
+    },
+    {
+        id: 3,
+        project_name: "Chew On It",
+        project_status: "Deployed",
+        initial_charge: 500,
+        balance: 200,
+        password: "password",
+        developer_id: 1,
+        client_id: 3
+    },
+    {
+        id: 4,
+        project_name: "Concertopia",
+        project_status: "Awaiting Payment",
+        initial_charge: 500,
+        balance: 250,
+        password: "password",
+        developer_id: 1,
+        client_id: 4
+    },
+    {
+        id: 5,
+        project_name: "Twitter",
+        project_status: "This is too much for a freelancer",
+        initial_charge: 500000000,
+        balance: 500000000,
+        password: "password",
+        developer_id: 1,
+        client_id: 5
+    },
+    {
+        id: 6,
+        project_name: "Test Project",
+        project_status: "find a way to quantify status",
+        initial_charge: 500,
+        balance: 500,
+        password: "password",
+        developer_id: 1,
+        client_id: 6
+    },
 ]
 
 const payments = [
