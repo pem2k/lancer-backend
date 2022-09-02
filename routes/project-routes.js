@@ -212,6 +212,26 @@ router.put("/deadlines", async (req, res) => {
     }
 })
 
+router.get("/invoices", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findAll({
+            where: {
+                developer_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Payment
+            }]
+        })
+    }catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }}
+})
+
 router.post("/invoices", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
