@@ -51,6 +51,7 @@ router.post("/login", async (req, res) => {
                 email: req.body.email
             },
         })
+        console.log(req.body)
         if (!foundUser) {
             return res.status(401).json({ msg: "invalid login credentials" })
 
@@ -63,7 +64,8 @@ router.post("/login", async (req, res) => {
             id: foundUser.id,
             first_name: foundUser.first_name,
             last_name: foundUser.last_name,
-            email: foundUser.email
+            email: foundUser.email,
+            type: foundUser.type
         }, process.env.JWT_SECRET, { expiresIn: "2h" })
 
         return res.status(200).json({ token: token })
