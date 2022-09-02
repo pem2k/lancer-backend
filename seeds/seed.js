@@ -133,10 +133,10 @@ const projects = [
     },
     {
         id: 6,
-        project_name: "Test Project",
-        project_status: "find a way to quantify status",
-        initial_charge: 500,
-        balance: 500,
+        project_name: "Take a break!",
+        project_status: "Just chillout",
+        initial_charge: 10,
+        balance: 10,
         password: "password",
         developer_id: 1,
         client_id: 6
