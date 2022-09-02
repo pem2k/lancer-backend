@@ -111,7 +111,7 @@ router.get("/verify", async(req, res) => {
    
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
-        return res.status(200).json(userData)
+        res.status(200).json({"status":200, dev: userData})
 }catch (err) {
     if (err) {
         console.log(err)
