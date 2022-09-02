@@ -80,6 +80,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/home", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
+    if(!token){res.status(403)}
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const devData = await Developer.findOne({
@@ -106,27 +107,28 @@ router.get("/home", async (req, res) => {
         }
     }
 })
-router.get("/verify", async(req, res) => {
+
+router.get("/verify", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
-   
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
-        res.status(200).json({"status":200, dev: userData})
-}catch (err) {
-    if (err) {
-        console.log(err)
-        res.status(500).json(`Internal server error`)
+        res.json({dev: userData})
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(403).json(`Invalid token`)
+        }
     }
-}})
+})
 
 router.put("/settings", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
-   
+
     try {
 
         const userData = jwt.verify(token, process.env.JWT_SECRET)
 
-        if(userData.type == "client"){
+        if (userData.type == "client") {
             return res.status(403).json("Developer only")
         }
 
@@ -137,8 +139,8 @@ router.put("/settings", async (req, res) => {
         })
 
         res.status(200).json(devData)
-        
-    }catch (err) {
+
+    } catch (err) {
         if (err) {
             console.log(err)
             res.status(500).json(`Internal server error: ${err}`)
