@@ -90,6 +90,9 @@ router.get("/home", async (req, res) => {
             include: [{
                 model: Project,
                 attributes: { exclude: ["password"] },
+                where:{
+                    client_id: !null
+                },
                 include: [{
                     model: Client,
                     attributes: { exclude: ["password"] }
