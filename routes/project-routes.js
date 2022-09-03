@@ -225,6 +225,8 @@ router.get("/invoices", async (req, res) => {
                 model: Payment
             }]
         })
+
+        res.status(200).json(permCheck)
     }catch (err) {
         if (err) {
             console.log(err)
