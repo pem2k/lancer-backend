@@ -222,7 +222,7 @@ router.get("/invoices", async (req, res) => {
             },
             attributes: {exclude: ["password"]},
             include: [{
-                model: Payment
+                model: Payment,
             }]
         })
 
