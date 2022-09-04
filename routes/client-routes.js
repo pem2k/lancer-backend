@@ -34,7 +34,7 @@ router.post("/signup", async(req, res) => {
             type: foundUser.type
         }, process.env.JWT_SECRET, {expiresIn: "2h"})
 
-        return res.status(200).json({token:token})
+        return res.status(200).json({token:token, type: foundUser.type})
 
     }catch(err) {
         if(err){
@@ -69,7 +69,7 @@ router.post("/login", async(req, res) => {
             email: foundUser.email
         }, process.env.JWT_SECRET, {expiresIn: "2h"})
         
-        return res.status(200).json({token: token})
+        return res.status(200).json({token: token, type: foundUser.type})
 
     }catch(err) {
         if(err){
