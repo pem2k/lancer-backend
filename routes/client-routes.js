@@ -141,9 +141,7 @@ router.put("/settings", async (req, res) => {
 })
 
 
-router.delete("/logout", async (req, res) => {
-    res.cookie("jwt", "", {maxAge: 1}).redirect("/")
-})
+
 
 
 
