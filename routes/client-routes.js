@@ -91,17 +91,14 @@ router.get("/home", async(req, res) => {
             },
             include: [{
                 model: Project,
-                attributes: {exclude: ["password"]},
+                attributes: { exclude: ["password"] },
                 include: [{
                     model: Developer,
-                    attributes: {exclude: ["password"]}
-                }, 
-                {
-                    model: Payment
-                }, 
-                {
-                    model: Deadline
-                }]
+                    attributes: { exclude: ["password"] }
+                },
+                { model: Deadline },
+                { model: Payment }
+                ]
             }],
         })
         return res.status(200).json(clientData)
