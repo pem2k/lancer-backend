@@ -88,14 +88,14 @@ router.get("/home", async (req, res) => {
             where: {
                 id: userData.id
             },
-            
+            order: [[{model: Project}, 'createdAt', 'DESC']],
             include: [{
                 model: Project,
                 attributes: { exclude: ["password"] },
                 where:{
                    client_id: {[Op.ne]: null}
                 },
-                order: [["project", 'createdAt', 'ASC']],
+               
                 include: [{
                     model: Client,
                     attributes: { exclude: ["password"] }
