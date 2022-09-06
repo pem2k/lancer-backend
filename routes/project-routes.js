@@ -212,7 +212,51 @@ router.put("/deadlines", async (req, res) => {
     }
 })
 
-router.get("/invoices", async (req, res) => {
+router.get("/deadlines/developers", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findAll({
+            where: {
+                developer_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Deadline,
+            }]
+        })
+
+        res.status(200).json(permCheck)
+    }catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }}
+})
+
+router.get("/deadlines/clients", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findAll({
+            where: {
+                client_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Deadline,
+            }]
+        })
+
+        res.status(200).json(permCheck)
+    }catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }}
+    })   
+
+router.get("/invoices/developers", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
@@ -233,6 +277,28 @@ router.get("/invoices", async (req, res) => {
             res.status(500).json(`Internal server error: ${err}`)
         }}
 })
+
+router.get("/invoices/clients", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findAll({
+            where: {
+                client_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Payment,
+            }]
+        })
+
+        res.status(200).json(permCheck)
+    }catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }}
+    })   
 
 router.post("/invoices", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
@@ -296,7 +362,8 @@ router.put("/invoices", async (req, res) => {
 
         const invoiceUpdate = await Payment.findOne({
             where: {
-                project_id: permCheck.id,
+                project_id: req.body.project_id,
+                id: req.body.invoice_id
             }
         })
 

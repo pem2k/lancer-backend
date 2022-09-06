@@ -12,7 +12,7 @@ Project.belongsTo(Developer, {
 })
 
 
-Client.hasOne(Project, {
+Client.hasMany(Project, {
     foreignKey:"client_id"
 })
 Project.belongsTo(Client, {
