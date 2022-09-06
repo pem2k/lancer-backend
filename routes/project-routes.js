@@ -362,7 +362,8 @@ router.put("/invoices", async (req, res) => {
 
         const invoiceUpdate = await Payment.findOne({
             where: {
-                project_id: permCheck.id,
+                project_id: req.body.project_id,
+                id: req.body.invoice_id
             }
         })
 
