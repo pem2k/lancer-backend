@@ -5,7 +5,7 @@ const router = express.Router()
 const bcrypt = require("bcrypt")
 
 
-const {Developer, Client, Deadline, Payment, Project } = require("../models")
+const {Developer, Client, Deadline, Payment, Project, Appointment } = require("../models")
 
 
 router.post("/signup", async(req, res) => {

@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt")
 const { Op } = require("sequelize")
 
 
-const { Developer, Client, Deadline, Payment, Project } = require("../models")
+const { Developer, Client, Deadline, Payment, Project, Appointment } = require("../models")
 
 
 router.post("/signup", async (req, res) => {
