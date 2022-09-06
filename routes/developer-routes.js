@@ -95,7 +95,7 @@ router.get("/home", async (req, res) => {
                 where:{
                    client_id: {[Op.ne]: null}
                 },
-                order: [[Project, 'createdAt', 'DESC']],
+                order: [['createdAt', 'DESC']],
                 include: [{
                     model: Client,
                     attributes: { exclude: ["password"] }
