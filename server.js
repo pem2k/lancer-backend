@@ -12,7 +12,7 @@ var corsOptions = {
 
 
 app.use((req, res, next) => {
-    const allowedOrigins = ['http://localhost:3000', 'https://radiant-naiad-1954e2.netlify.app/'];
+    const allowedOrigins = ['http://localhost:3000', 'https://radiant-naiad-1954e2.netlify.app'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
          res.setHeader('Access-Control-Allow-Origin', origin);
