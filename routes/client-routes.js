@@ -83,8 +83,8 @@ router.post("/login", async(req, res) => {
 
 router.get("/home", async(req, res) => {
     const token = req.headers.authorization.split(" ")[1]
-    try {
-        const userData = jwt.verify(token, process.env.JWT_SECRET)
+    try{
+        const userData = jwt.verify(token,process.env.JWT_SECRET)
         const clientData = await Client.findOne({
             where: {
                 id: userData.id
@@ -93,10 +93,6 @@ router.get("/home", async(req, res) => {
             include: [{
                 model: Project,
                 attributes: { exclude: ["password"] },
-                where:{
-                   client_id: userData.id
-                },
-               
                 include: [{
                     model: Developer,
                     attributes: { exclude: ["password"] }
@@ -106,10 +102,9 @@ router.get("/home", async(req, res) => {
                 ]
             }],
         })
-        console.log(clientData)
         return res.status(200).json(clientData)
-    } catch (err) {
-        if (err) {
+    }catch(err) {
+        if(err){
             console.log(err)
             res.status(500).json(`Internal server error: ${err}`)
         }
