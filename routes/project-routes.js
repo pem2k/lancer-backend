@@ -171,7 +171,8 @@ router.post("/deadlines", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                id: req.body.project_id
+                id: req.body.project_id,
+                developer_id: userData.id
             },
             attributes: {exclude: ["password"]},
             include: [{
@@ -187,7 +188,6 @@ router.post("/deadlines", async (req, res) => {
         const newDeadline = await Deadline.create({
             completion_date: req.body.completion_date,
             deliverable: req.body.deliverable,
-            priority: req.body.priority,
             project_id: req.body.project_id
         })
 
