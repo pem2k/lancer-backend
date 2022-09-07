@@ -42,7 +42,7 @@ Appointment.init({
         allowNull: true,
     },
 
-    appointment_link: {
+    appointment_location: {
         type: DataTypes.STRING,
         allowNull: true,
     },

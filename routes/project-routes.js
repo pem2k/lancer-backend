@@ -254,7 +254,9 @@ router.get("/deadlines/clients", async (req, res) => {
             console.log(err)
             res.status(500).json(`Internal server error: ${err}`)
         }}
-    })   
+    })
+    
+    
 
 router.get("/invoices/developers", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]

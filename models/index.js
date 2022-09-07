@@ -3,6 +3,7 @@ const Developer = require("./Developer")
 const Deadline = require("./Deadline")
 const Payment = require("./Payment")
 const Project = require("./Project")
+const Appointment = require("./Appointment")
 
 Developer.hasMany(Project, {
     foreignKey: "developer_id"
@@ -35,4 +36,4 @@ Payment.belongsTo(Project, {
     foreignKey:"project_id"
 })
 
-module.exports = { Developer, Client, Project, Deadline, Payment }
+module.exports = { Developer, Client, Project, Deadline, Payment, Appointment}
