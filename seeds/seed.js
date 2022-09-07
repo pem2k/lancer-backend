@@ -158,12 +158,32 @@ const payments = [
     },
     {
         id: 3,
-        payment_date: "2022-01-17",
+        payment_date: "2022-01-19",
         payment_sum: 100,
         project_id: 2},
     {
         id: 4,
         payment_date: "2022-01-22",
+        payment_sum: 1000,
+        project_id: 2},
+        {
+        id: 5,
+        payment_date: "2022-01-23",
+        payment_sum: 100,
+        project_id: 2},
+    {
+        id: 6,
+        payment_date: "2022-01-23",
+        payment_sum: 1000,
+        project_id: 2},
+        {
+        id: 7,
+        payment_date: "2022-01-25",
+        payment_sum: 100,
+        project_id: 2},
+    {
+        id: 8,
+        payment_date: "2022-01-25",
         payment_sum: 1000,
         project_id: 2},
 ]

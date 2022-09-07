@@ -340,9 +340,13 @@ router.post("/invoices", async (req, res) => {
     }
 })
 
+
+
 router.put("/invoices", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
+    
     try {
+        console.log(req.body)
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
@@ -356,18 +360,17 @@ router.put("/invoices", async (req, res) => {
             }
         })
 
-        if (permCheck.developer_id != userData.id) {
-            return res.status(403).json("You are not the developer assigned to this project")
-        }
+        
 
-        const invoiceUpdate = await Payment.findOne({
-            where: {
+        const invoiceUpdate = await Payment.update({paid: true},
+           {where: {
                 project_id: req.body.project_id,
-                id: req.body.invoice_id
-            }
+                id: req.body.id
+            },
+            
         })
 
-        await invoiceUpdate.update({ paid: true })
+        
         await permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
 
         await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Invoice paid for: ${permCheck.project_name}`,`
