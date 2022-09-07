@@ -109,7 +109,7 @@ const projects = [
         balance: 5000,
         password: "password",
         developer_id: 1,
-        client_id: 3
+        client_id: 2
     },
    
     {
