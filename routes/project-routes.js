@@ -378,7 +378,7 @@ router.put("/invoices", async (req, res) => {
         amount: ${invoiceUpdate.payment_sum}
         project balance: ${permCheck.balance}`)
 
-        res.status(200).json(invoiceUpdate)
+        res.status(200).json(invoiceUpdate.paid)
 
     } catch (err) {
         if (err) {
