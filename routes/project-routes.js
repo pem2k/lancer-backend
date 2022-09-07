@@ -370,8 +370,15 @@ router.put("/invoices", async (req, res) => {
             
         })
 
+        const newinvoiceUpdate = await Payment.findOne({
+            where: {
+                project_id: req.body.project_id,
+                id: req.body.id
+            },
+        })
+        const newNum = await permCheck.balance - newinvoiceUpdate.payment_sum
         
-        await permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
+        await permCheck.update({ balance: newNum })
 
         await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Invoice paid for: ${permCheck.project_name}`,`
         due: ${invoiceUpdate.payment_date}, 
