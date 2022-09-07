@@ -182,28 +182,28 @@ const payments = [
 const deadlines  = [
     {
         id: 1,
-        completion_date:2022-01-17,
+        completion_date:'2022-01-17',
         deliverable:"New navbar",
         priority:5,
         project_id: 1
     },
     {
         id: 2,
-        completion_date:2022-01-18,
+        completion_date:'2022-01-18',
         deliverable:"New server",
         priority:4,
         project_id: 1
     },
     {
         id: 3,
-        completion_date:2022-01-20,
+        completion_date:'2022-01-20',
         deliverable:"New about section",
         priority:3,
         project_id: 2
     },
     {
         id: 4,
-        completion_date:2022-01-25,
+        completion_date:'2022-01-25',
         deliverable:"New Page",
         priority:1,
         project_id: 2
