@@ -65,6 +65,35 @@ router.put("/", async (req, res) => {
     }
 })
 
+router.get("/:id", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const foundProject = await Project.findOne({
+            where: {
+                id: req.params.id
+            },
+            attributes: { exclude: ["password"] },
+            include: [
+            {model: Developer, attributes: { exclude: ["password"] }},
+            {model: Client, attributes: { exclude: ["password"] }}, 
+            { model: Deadline }, 
+            { model: Payment }]
+        })
+        if (!foundProject || foundProject.developer_id != userData.id && foundProject.client_id !=userData.id) {
+            return res.status(404).json({ msg: "Project not found" })
+        }
+
+        return res.status(200).json(foundProject)
+
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
 router.get("/dev", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
