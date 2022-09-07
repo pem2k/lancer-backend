@@ -135,7 +135,15 @@ router.get("/client", async (req, res) => {
 })
 
 
-//auth that allows clients to join the project
+//-----------------------------------------------------//
+//-                                                   -//
+//-                                                   -//
+//                 DEADLINE SECTION                    //
+//-                                                   -//
+//-                                                   -//
+//-----------------------------------------------------//
+
+
 router.post("/deadlines", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
@@ -256,7 +264,156 @@ router.get("/deadlines/clients", async (req, res) => {
         }}
     })
     
+//-----------------------------------------------------//
+//-                                                   -//
+//-                                                   -//
+//                APPOINTMENT SECTION                  //
+//-                                                   -//
+//-                                                   -//
+//-----------------------------------------------------//
+
+router.post("/appointments", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Appointment.findOne({
+            where: {
+                id: req.body.project_id
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Client,
+                attributes: {exclude: ["password"]}
+            }]
+        })
+
+        if (permCheck.developer_id != userData.id) {
+            return res.status(403).json("You are not the developer assigned to this project")
+        }
+
+        const newAppointment = await Appointment.create({
+            appointment_name: req.body.appointment_name,
+            appointment_date: req.body.appointment_date,
+            appointment_duration: req.body.appointment_duration,
+            description: req.body.description,
+            appointment_memo: req.body.appointment_memo,
+            developer_id: userData.id,//token id,
+            client_id: null
+        })
+
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `New Appointment Created for ${permCheck.project_name}: ${newAppointment.completion_date}`,`${newAppointment.deliverable}`)
+        
+        res.status(200).json(newAppointment)
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
+router.put("/appointments", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findOne({
+            where: {
+                id: req.body.project_id,
+                developer_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Client,
+                attributes: {exclude: ["password"]}
+            }]
+        })
+
+        if (permCheck.developer_id != userData.id || userData.type == "client") {
+            return res.status(403).json("You are not the developer assigned to this project")
+        }
+
+        const deadlineUpdate = await Appointment.findOne({
+            where: {
+                id: req.body.id,
+                project_id: permCheck.id,
+            }
+        })
+
+        await deadlineUpdate.update({ completed: true })
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Deliverable complete for: ${permCheck.project_name}: ${deadlineUpdate.completion_date}`,`${deadlineUpdate.deliverable}`)
+        res.status(200).json(deadlineUpdate)
+
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
+router.get("/appointments/developers", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findAll({
+            where: {
+                developer_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Appointment,
+            }]
+        })
+
+        res.status(200).json(permCheck)
+    }catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }}
+})
+
+router.get("/appointments/clients", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const permCheck = await Project.findAll({
+            where: {
+                client_id: userData.id,
+            },
+            attributes: {exclude: ["password"]},
+            include: [{
+                model: Appointment,
+            }]
+        })
+
+        res.status(200).json(permCheck)
+    }catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }}
+    })
+
+
+
+
+
+
+
+
+
+
     
+//-----------------------------------------------------//
+//-                                                   -//
+//-                                                   -//
+//                  INVOICE SECTION                    //
+//-                                                   -//
+//-                                                   -//
+//-----------------------------------------------------//
+
+
 
 router.get("/invoices/developers", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
