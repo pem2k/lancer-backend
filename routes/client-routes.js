@@ -94,7 +94,7 @@ router.get("/home", async(req, res) => {
                 model: Project,
                 attributes: { exclude: ["password"] },
                 where:{
-                   client_id: {[Op.ne]: null}
+                   client_id: userData.id
                 },
                
                 include: [{
@@ -106,6 +106,7 @@ router.get("/home", async(req, res) => {
                 ]
             }],
         })
+        console.log(clientData)
         return res.status(200).json(clientData)
     } catch (err) {
         if (err) {
