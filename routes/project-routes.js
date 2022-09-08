@@ -276,7 +276,7 @@ router.post("/appointments", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
-        const permCheck = await Appointment.findOne({
+        const permCheck = await Project.findOne({
             where: {
                 id: req.body.project_id
             },
@@ -287,21 +287,23 @@ router.post("/appointments", async (req, res) => {
             }]
         })
 
-        if (permCheck.developer_id != userData.id) {
-            return res.status(403).json("You are not the developer assigned to this project")
+        if (permCheck.client_id != userData.id) {
+            return res.status(403).json("You are not the client assigned to this project")
         }
 
         const newAppointment = await Appointment.create({
             appointment_name: req.body.appointment_name,
             appointment_date: req.body.appointment_date,
+            appointment_time: req.body.appointment_time,
             appointment_duration: req.body.appointment_duration,
+            appointment_location: req.body.appointment_location,
             description: req.body.description,
             appointment_memo: req.body.appointment_memo,
-            developer_id: userData.id,//token id,
-            client_id: null
+            developer_id: null,//token id,
+            client_id: userData.id,
         })
 
-        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `New Appointment Created for ${permCheck.project_name}: ${newAppointment.completion_date}`,`${newAppointment.deliverable}`)
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `New Appointment Created for ${permCheck.project_name}: On ${newAppointment.appointment_date} at ${newAppointment.appointment_time} and location of ${newAppointment.appointment_location} Full Details: ${newAppointment.appointment_memo}`)
         
         res.status(200).json(newAppointment)
     } catch (err) {
@@ -319,7 +321,7 @@ router.put("/appointments", async (req, res) => {
         const permCheck = await Project.findOne({
             where: {
                 id: req.body.project_id,
-                developer_id: userData.id,
+                client_id: userData.id,
             },
             attributes: {exclude: ["password"]},
             include: [{
@@ -328,20 +330,20 @@ router.put("/appointments", async (req, res) => {
             }]
         })
 
-        if (permCheck.developer_id != userData.id || userData.type == "client") {
-            return res.status(403).json("You are not the developer assigned to this project")
+        if (permCheck.client_id != userData.id || userData.type == "client") {
+            return res.status(403).json("You are not the client assigned to this project")
         }
 
-        const deadlineUpdate = await Appointment.findOne({
+        const appointmentUpdate = await Appointment.findOne({
             where: {
                 id: req.body.id,
                 project_id: permCheck.id,
             }
         })
 
-        await deadlineUpdate.update({ completed: true })
-        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Deliverable complete for: ${permCheck.project_name}: ${deadlineUpdate.completion_date}`,`${deadlineUpdate.deliverable}`)
-        res.status(200).json(deadlineUpdate)
+        await appointmentUpdate.update({ completed: true })
+        await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Appointment for: ${permCheck.project_name}: ${appointmentUpdate.appointment_date} at ${appointmentUpdate.appointment_time} and location of ${newAppointment.appointment_location} Full Detals: ${appointmentUpdate.appointment_memo}`)
+        res.status(200).json(appointmentUpdate)
 
     } catch (err) {
         if (err) {
@@ -357,7 +359,7 @@ router.get("/appointments/developers", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findAll({
             where: {
-                developer_id: userData.id,
+                client_id: userData.id,
             },
             attributes: {exclude: ["password"]},
             include: [{
@@ -394,13 +396,6 @@ router.get("/appointments/clients", async (req, res) => {
             res.status(500).json(`Internal server error: ${err}`)
         }}
     })
-
-
-
-
-
-
-
 
 
 

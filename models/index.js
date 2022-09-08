@@ -28,6 +28,13 @@ Deadline.belongsTo(Project, {
     foreignKey: "project_id"
 })
 
+Project.hasMany(Appointment,{
+    foreignKey: "project_id"
+})
+Appointment.belongsTo(Project, {
+    foreignKey: "project_id"
+})
+
 
 Project.hasMany(Payment, {
     foreignKey:"project_id"
