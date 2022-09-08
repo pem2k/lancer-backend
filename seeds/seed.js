@@ -85,8 +85,8 @@ const projects = [
         id: 1,
         project_name: "Test Project",
         project_status: "In the testing phase.",
-        initial_charge: 500,
-        balance: 500,
+        initial_charge: 50000,
+        balance: 50000,
         password: "password",
         developer_id: 1,
         client_id: 1
@@ -98,29 +98,20 @@ const projects = [
         initial_charge: 1000,
         balance: 1000,
         password: "password",
-        developer_id: 2,
+        developer_id: 1,
         client_id: 2
     },
     {
         id: 3,
         project_name: "Chew On It",
         project_status: "Deployed",
-        initial_charge: 500,
-        balance: 200,
+        initial_charge: 5000,
+        balance: 5000,
         password: "password",
         developer_id: 1,
-        client_id: 3
+        client_id: 2
     },
-    {
-        id: 4,
-        project_name: "Concertopia",
-        project_status: "Awaiting Payment",
-        initial_charge: 500,
-        balance: 250,
-        password: "password",
-        developer_id: 1,
-        client_id: 4
-    },
+   
     {
         id: 5,
         project_name: "Twitter",
@@ -135,8 +126,8 @@ const projects = [
         id: 6,
         project_name: "Take a break!",
         project_status: "Just chillout",
-        initial_charge: 10,
-        balance: 10,
+        initial_charge: 1000,
+        balance: 1000,
         password: "password",
         developer_id: 1,
         client_id: 6
@@ -153,66 +144,66 @@ const payments = [
     {
         id: 2,
         payment_date: "2022-01-22",
-        payment_sum: 1000,
-        project_id: 1
+        payment_sum: 100,
+        project_id: 2
     },
     {
         id: 3,
         payment_date: "2022-01-19",
         payment_sum: 100,
-        project_id: 1},
+        project_id: 3},
     {
         id: 4,
         payment_date: "2022-01-22",
-        payment_sum: 1000,
-        project_id: 1},
+        payment_sum: 100,
+        project_id: 5},
         {
         id: 5,
         payment_date: "2022-01-23",
         payment_sum: 100,
-        project_id: 1},
+        project_id: 5},
     {
         id: 6,
         payment_date: "2022-01-23",
         payment_sum: 1000,
-        project_id: 1},
+        project_id: 2},
         {
         id: 7,
         payment_date: "2022-01-25",
         payment_sum: 100,
-        project_id: 2},
+        project_id: 3},
     {
         id: 8,
         payment_date: "2022-01-25",
         payment_sum: 1000,
-        project_id: 2},
+        project_id: 1},
 ]
 
 const deadlines  = [
     {
         id: 1,
-        completion_date:2022-01-17,
+        completion_date:'2022-01-17',
         deliverable:"New navbar",
         priority:5,
         project_id: 1
     },
     {
         id: 2,
-        completion_date:2022-01-18,
+        completion_date:'2022-01-18',
         deliverable:"New server",
         priority:4,
         project_id: 1
     },
     {
         id: 3,
-        completion_date:2022-01-20,
+        completion_date:'2022-01-20',
         deliverable:"New about section",
         priority:3,
         project_id: 2
     },
     {
         id: 4,
-        completion_date:2022-01-25,
+        completion_date:'2022-01-25',
         deliverable:"New Page",
         priority:1,
         project_id: 2

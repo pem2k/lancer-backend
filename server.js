@@ -6,11 +6,9 @@ const cors = require("cors")
 const app = express();
 
 var corsOptions = {
-    origin: ['http://localhost:3000',  'https://radiant-naiad-1954e2.netlify.app/'],
-    credentials: true,
     methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'] };
 
-    app.use(cors());
+    app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3001;
 

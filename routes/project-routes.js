@@ -65,6 +65,35 @@ router.put("/", async (req, res) => {
     }
 })
 
+router.get("/:id", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    try {
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const foundProject = await Project.findOne({
+            where: {
+                id: req.params.id
+            },
+            attributes: { exclude: ["password"] },
+            include: [
+            {model: Developer, attributes: { exclude: ["password"] }},
+            {model: Client, attributes: { exclude: ["password"] }}, 
+            { model: Deadline }, 
+            { model: Payment }]
+        })
+        if (!foundProject || foundProject.developer_id != userData.id && foundProject.client_id !=userData.id) {
+            return res.status(404).json({ msg: "Project not found" })
+        }
+
+        return res.status(200).json(foundProject)
+
+    } catch (err) {
+        if (err) {
+            console.log(err)
+            res.status(500).json(`Internal server error: ${err}`)
+        }
+    }
+})
+
 router.get("/dev", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1]
     try {
@@ -150,7 +179,8 @@ router.post("/deadlines", async (req, res) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET)
         const permCheck = await Project.findOne({
             where: {
-                id: req.body.project_id
+                id: req.body.project_id,
+                developer_id: userData.id
             },
             attributes: {exclude: ["password"]},
             include: [{
@@ -166,7 +196,6 @@ router.post("/deadlines", async (req, res) => {
         const newDeadline = await Deadline.create({
             completion_date: req.body.completion_date,
             deliverable: req.body.deliverable,
-            priority: req.body.priority,
             project_id: req.body.project_id
         })
 
@@ -524,8 +553,15 @@ router.put("/invoices", async (req, res) => {
             
         })
 
+        const newinvoiceUpdate = await Payment.findOne({
+            where: {
+                project_id: req.body.project_id,
+                id: req.body.id
+            },
+        })
+        const newNum = await permCheck.balance - newinvoiceUpdate.payment_sum
         
-        await permCheck.update({ balance: permCheck.balance - invoiceUpdate.paymentSum })
+        await permCheck.update({ balance: newNum })
 
         await mail(userData.first_name, userData.last_name, permCheck.Client.email, `Invoice paid for: ${permCheck.project_name}`,`
         due: ${invoiceUpdate.payment_date}, 
